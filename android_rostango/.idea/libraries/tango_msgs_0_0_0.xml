@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="tango_msgs-0.0.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tango_area_learning/libs/tango_msgs-0.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

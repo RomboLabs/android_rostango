@@ -15,25 +15,30 @@ from geometry_msgs.msg import TransformStamped
 from tango_msgs.msg import TangoPoseDataMsg
 
 def callback(tango_pose):
-    f=open('tango_pose','a')
-    #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
-     
-   # grab_vicon_pose = rospy.ServiceProxy('grab_vicon_pose', PoseStamped);
-    #try:
-    #   avg_vicon_pose = grab_vicon_pose(n)
-    #except rospy.ServiceException as exc:
-    #    print("Service did not process request: " + str(exc))
-  
-    f.write('pose_time = '+str(tango_pose.timestamp)+ ','+ str(tango_pose.translation)+ ','+str(tango_pose.orientation)+'\n') 
-    #f.write('vicon_time = '+str(avg_vicon_pose.timestamp)+'\n')   
-    
-     
-    f.close();
-    
-def sync_callback(tango_pose_adf_device, tango_pose_start_device, tango_pose__adf_start, vicon_pose):
-    
-     f=open('tango_pose','a')
+    rospy.loginfo("callback");
+    rospy.loginfo(tango_pose.header.stamp);
 
+
+    print('pose_time = '+str(tango_pose.timestamp)+ ','+ str(tango_pose.translation)+ ','+str(tango_pose.orientation)+'\n') 
+
+def vicon_callback(vicon_pose):
+    rospy.loginfo("vicon_callback");
+    rospy.loginfo(vicon_pose.header.stamp);
+
+
+   # print('pose_time = '+str(tango_pose.timestamp)+ ','+ str(tango_pose.translation)+ ','+str(tango_pose.orientation)+'\n') 
+
+    
+def sync_callback( tango_pose_start_device,  vicon_pose):
+     rospy.loginfo("synced");
+
+     print("tango: " +str(tango_pose_start_device.header.stamp)  )
+     print("vicon: " + str(vicon_pose.header.stamp))
+     f=open('tango_vicon_pose','a')
+
+     f.write('pose_time = '+str(tango_pose_start_device.header.stamp)+ ','+ str(tango_pose_start_device.translation)+ ','+str(tango_pose_start_device.orientation)+'\n') 	 
+     f.write('vicon_time = '+str(vicon_pose.header.stamp)+ ','+ str(vicon_pose.transform.translation)+ ','+str(vicon_pose.transform.rotation)+'\n')      
+	
      f.close();
      
     
@@ -41,16 +46,15 @@ def listener():
 
     rospy.init_node('listener', anonymous=True)
 
-   # rospy.Subscriber("tango_pose", TangoPoseDataMsg, callback)
-   # rospy.loginfo("listening");
+    #rospy.Subscriber('/tango_pose_start_device', TangoPoseDataMsg, callback)
+    #rospy.Subscriber('/vicon/tangoJune29/mainBody', TransformStamped, vicon_callback)
+    rospy.loginfo("listening");
 
-    tango_sub_1= message_filters.Subscriber('tango_pose_adf_device', TangoPoseDataMsg) #adf to device
-    tango_sub_2= message_filters.Subscriber('tango_pose_start_device', TangoPoseDataMsg) #Start of service to device
-    tango_sub_3= message_filters.Subscriber('tango_pose__adf_start', TangoPoseDataMsg)  #Area description to start of service
+    tango_sub= message_filters.Subscriber('/tango_pose_start_device', TangoPoseDataMsg) #Start of service to device
 
-    vicon_sub= message_filters.Subscriber('vicon/<subject_name>/<segment_name>',TransformStamped )  # Vicon pose est 
+    vicon_sub= message_filters.Subscriber('/vicon/tangoJune29/mainBody',TransformStamped )  # Vicon pose est 
     
-    ts = message_filters.TimeSynchronizer([tango_sub_1, tango_sub_2,tango_sub_3,vicon_sub], 10)
+    ts = message_filters.ApproximateTimeSynchronizer([tango_sub,vicon_sub], 10,5)
     
     ts.registerCallback(sync_callback)
     

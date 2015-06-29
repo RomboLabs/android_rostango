@@ -1,5 +1,5 @@
 uint32 version
-time ros_timestamp
+Header header
 float64 timestamp
 float64[4] orientation
 float64[3] translation

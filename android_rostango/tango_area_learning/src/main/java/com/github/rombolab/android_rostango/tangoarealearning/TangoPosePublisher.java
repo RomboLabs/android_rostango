@@ -123,8 +123,9 @@ public class TangoPosePublisher {
 
     public void publishPose() {
 
-        Time t = pConnectedNode.getCurrentTime();
-        pose_msg.setRosTimestamp(t);
+        Time ros_time = pConnectedNode.getCurrentTime();
+        pose_msg.getHeader().setFrameId("global");
+        pose_msg.getHeader().setStamp(ros_time);
         tango_publisher.publish(pose_msg);
 
     }

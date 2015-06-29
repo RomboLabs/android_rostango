@@ -21,17 +21,17 @@ import tango_msgs.TangoPoseStatusTypeMsg;
 public class TangoPosePublisher {
     private TangoPoseDataMsg pose_msg;
    // private Publisher<TangoPoseDataMsg> pub_adf_device;
-    private Publisher<TangoPoseDataMsg> pub_start_device;
+    private Publisher<TangoPoseDataMsg> tango_publisher;
   //  private Publisher<TangoPoseDataMsg> pub_adf_start;;
     private ConnectedNode pConnectedNode;
     private static String TAG = TangoPosePublisher.class.getSimpleName();
 
-    public TangoPosePublisher(ConnectedNode connectedNode){
+    public TangoPosePublisher(ConnectedNode connectedNode,java.lang.String topic_Name){
         pConnectedNode = connectedNode;
         pose_msg = connectedNode.getTopicMessageFactory().newFromType(TangoPoseDataMsg._TYPE);
-    //    pub_adf_device   = connectedNode.newPublisher("/tango_pose_adf_device  ", TangoPoseDataMsg._TYPE);
-        pub_start_device = connectedNode.newPublisher("/tango_pose_start_device", TangoPoseDataMsg._TYPE);
-   //     pub_adf_start   = connectedNode.newPublisher("/tango_pose_adf_start  ", TangoPoseDataMsg._TYPE);
+
+       tango_publisher = connectedNode.newPublisher(topic_Name, TangoPoseDataMsg._TYPE);
+
     }
 
     public void setPoseMsg(TangoPoseData pose_Tango){
@@ -60,23 +60,23 @@ public class TangoPosePublisher {
         switch (statusCode) {
             case TangoPoseData.POSE_INITIALIZING:
                 statusCodeMsg.setStatus(TangoPoseStatusTypeMsg.TANGO_POSE_INITIALIZING);
-                Log.i(TAG, "Status Initializing " + statusCode);
+                //Log.i(TAG, "Status Initializing " + statusCode);
                 break;
 
             case TangoPoseData.POSE_INVALID:
                 statusCodeMsg.setStatus(TangoPoseStatusTypeMsg.TANGO_POSE_INVALID);
-                Log.i(TAG, "Status InValid " + statusCode);
+                //Log.i(TAG, "Status InValid " + statusCode);
                 break;
 
             case TangoPoseData.POSE_VALID:
                 statusCodeMsg.setStatus(TangoPoseStatusTypeMsg.TANGO_POSE_VALID);
              //   statusCodeMsg.equals(TangoPoseStatusTypeMsg.TANGO_POSE_VALID);
-                Log.i(TAG, "Status Valid " + statusCode);
+                //Log.i(TAG, "Status Valid " + statusCode);
                 break;
 
             default:
                 statusCodeMsg.setStatus(TangoPoseStatusTypeMsg.TANGO_POSE_UNKNOWN);
-                Log.i(TAG, "Status Unknown " + statusCode);
+              //  Log.i(TAG, "Status Unknown " + statusCode);
                 break;
         }
 
@@ -123,6 +123,13 @@ public class TangoPosePublisher {
 
     public void publishPose() {
 
+        Time t = pConnectedNode.getCurrentTime();
+        pose_msg.setRosTimestamp(t);
+        tango_publisher.publish(pose_msg);
+
+    }
+
+    private void printMSG(TangoPoseDataMsg msg_data){
         DecimalFormat threeDec = new DecimalFormat("0.000");
         double msg_translation[]= pose_msg.getTranslation();
         String translationString = "[" + threeDec.format(msg_translation[0])
@@ -130,20 +137,7 @@ public class TangoPosePublisher {
                 + threeDec.format(msg_translation[2]) + "] ";
 
         Log.i(TAG, "Pose to be messaged " + translationString);
-
-        Time t = pConnectedNode.getCurrentTime();
-        pose_msg.setRosTimestamp(t);
-        pub_start_device.publish(pose_msg);
-
     }
 
-/*
-    public void publishPose(){
-        long lt = System.currentTimeMillis();
-        Time t = new Time((int) (lt / 1e3), (int) ((lt % 1e3) * 1e6));
-        pose.getHeader().setStamp(t);
-        pose.getHeader().setFrameId("/global");
-        publisher.publish(pose);
-    }
-    */
+
 }

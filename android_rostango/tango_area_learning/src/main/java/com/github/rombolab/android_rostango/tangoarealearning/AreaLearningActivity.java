@@ -421,6 +421,9 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                     mAdf2DevicePoseStatusTextView.setText(getPoseStatus(pose));
                     mAdf2DevicePoseCountTextView.setText(Integer.toString(mAdf2DevicePoseCount));
                     mAdf2DevicePoseDeltaTextView.setText(threeDec.format(mAdf2DevicePoseDelta));
+                    if (mALNode.isStarted) {
+                        mALNode.publishOnAdfToDevice(pose);
+                    }
                 }
 
                 if (pose.baseFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE
@@ -441,7 +444,7 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                     mStart2DevicePoseDeltaTextView.setText(threeDec.format(mStart2DevicePoseDelta));
 
                     if (mALNode.isStarted) {
-                        mALNode.publishPose(pose);
+                        mALNode.publishOnStartToDevice(pose);
                     }
 
                 }
@@ -467,6 +470,10 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                     } else {
                         mIsRelocalized = false;
                         // Set the color blue
+                    }
+
+                    if (mALNode.isStarted) {
+                        mALNode.publishOnAdfToStart(pose);
                     }
                 }
             }

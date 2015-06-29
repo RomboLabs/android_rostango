@@ -19,7 +19,9 @@ import tango_msgs.TangoPoseDataMsg;
 public class ALNode implements NodeMain {
 
     private static String TAG = ALNode.class.getSimpleName();
-    private TangoPosePublisher mTangoPosePublisher;
+    private TangoPosePublisher pSTART_DEVICE_pub;
+    private TangoPosePublisher pADF_DEVICE_pub;
+    private TangoPosePublisher pADF_START_pub;
 
 
     public boolean isStarted =false;
@@ -41,9 +43,12 @@ public class ALNode implements NodeMain {
 
     @Override
     public void onStart(ConnectedNode node) {
-        double test = 34;
+
         Log.i(TAG, "Starting Node");
-        mTangoPosePublisher = new TangoPosePublisher(node);
+        pSTART_DEVICE_pub = new TangoPosePublisher(node,"tango_pose_start_device");
+        pADF_DEVICE_pub = new TangoPosePublisher(node, "tango_pose_adf_device");
+        pADF_START_pub = new TangoPosePublisher(node,"tango_pose_adf_start");
+
 
         isStarted = true;
     }
@@ -80,22 +85,41 @@ public class ALNode implements NodeMain {
 
 
 
-    public void publishPose(TangoPoseData pose_Tango){
-
-        DecimalFormat threeDec = new DecimalFormat("0.000");
-        String translationString = "[" + threeDec.format(pose_Tango.translation[0])
-                + ", " + threeDec.format(pose_Tango.translation[1]) + ", "
-                + threeDec.format(pose_Tango.translation[2]) + "] ";
-
-        Log.i(TAG, "Pose to be messaged " + translationString);
+    public void publishOnStartToDevice(TangoPoseData pose_Tango){
 
 
-        mTangoPosePublisher.setPoseMsg(pose_Tango);
-        if(mTangoPosePublisher!=null) {
-            mTangoPosePublisher.publishPose();
+        pSTART_DEVICE_pub.setPoseMsg(pose_Tango);
+        if(pSTART_DEVICE_pub!=null) {
+
+            pSTART_DEVICE_pub.publishPose();
         }
     }
 
+        public void publishOnAdfToDevice(TangoPoseData pose_Tango){
 
+        pADF_DEVICE_pub.setPoseMsg(pose_Tango);
+        if(pADF_DEVICE_pub!=null) {
+
+            pADF_DEVICE_pub.publishPose();
+        }
+    }
+
+        public void publishOnAdfToStart(TangoPoseData pose_Tango){
+
+        pADF_START_pub.setPoseMsg(pose_Tango);
+        if(pADF_START_pub!=null) {
+
+            pADF_START_pub.publishPose();
+        }
+    }
+
+        private void printTangoPose(TangoPoseData pose_Tango){
+            DecimalFormat threeDec = new DecimalFormat("0.000");
+            String translationString = "[" + threeDec.format(pose_Tango.translation[0])
+                + ", " + threeDec.format(pose_Tango.translation[1]) + ", "
+                + threeDec.format(pose_Tango.translation[2]) + "] ";
+
+             Log.i(TAG, "Pose to be messaged " + translationString);
+         }
 
 }

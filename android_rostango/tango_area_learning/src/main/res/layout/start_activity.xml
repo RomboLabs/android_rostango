@@ -35,4 +35,12 @@
         android:text="@string/manage_adfs"
         android:textSize="15sp" />
 
+    <ToggleButton
+        android:id="@+id/loadgraphics"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textOff="@string/loadgraphics_off"
+        android:textOn="@string/loadgraphics_on"
+        android:textSize="15sp" />
+
 </LinearLayout>

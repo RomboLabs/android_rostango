@@ -16,7 +16,7 @@
 -->
 <resources>
 
-    <string name="app_name"> RomboLab ROS Tango Java Area Learning</string>
+    <string name="app_name"> RomboLabs ROS Tango Java Area Learning</string>
     <string name="menu_name">Java Area Learning</string>
     <string name="service_version">"Tango service version: "</string>
     <string name="app_version">"App version: "</string>
@@ -56,12 +56,14 @@
     <string name="motiontracking_permission">"Motion Tracking permission needed!"</string>
     <string name="arealearning_permission">"Area Learning permission needed!"</string>
     <string name="no_uuid">"no ADFs"</string>
-    <string name="number_of_adfs">"No of ADFs: "</string>
+    <string name="number_of_adfs">"Nos of ADFs: "</string>
     <string name="na">"N/A"</string>
     <string name="learningmode_off">"Learning mode off"</string>
     <string name="learningmode_on">"Learning mode on"</string>
     <string name="loadadf_on">"Load ADF on"</string>
     <string name="loadadf_off">"Load ADF off"</string>
+    <string name="loadgraphics_on">"Graphics on"</string>
+    <string name="loadgraphics_off">"Graphics off"</string>
     <string name="pose_initializing">"initializing"</string>
     <string name="pose_valid">"valid"</string>
     <string name="pose_invalid">"invalid"</string>

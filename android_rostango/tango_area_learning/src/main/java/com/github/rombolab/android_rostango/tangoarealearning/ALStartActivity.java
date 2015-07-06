@@ -18,11 +18,14 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
     public static final String USE_AREA_LEARNING =
             "com.rombolab.android_rostango.tangoarealearning.usearealearning";
     public static final String LOAD_ADF = "com.rombolab.android_rostango.tangoarealearning.loadadf";
+    public static final String LOAD_GRAPHICS = "com.rombolab.android_rostango.tangoarealearning.loadgraphics";
     private ToggleButton mLearningModeToggleButton;
     private ToggleButton mLoadADFToggleButton;
+    private ToggleButton mLoadGraphicsToggleButton;
     private Button mStartButton;
     private boolean mIsUseAreaLearning;
     private boolean mIsLoadADF;
+    private boolean mIsLoadGraphics;
 
 /*    public AreaLearningStartActivity() {
         super("AreaLearning", "AreaLearning");
@@ -37,7 +40,7 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
         mLearningModeToggleButton = (ToggleButton) findViewById(R.id.learningmode);
         mLoadADFToggleButton = (ToggleButton) findViewById(R.id.loadadf);
         mStartButton = (Button) findViewById(R.id.start);
-
+        mLoadGraphicsToggleButton = (ToggleButton) findViewById(R.id.loadgraphics);
         mStartButton.setOnClickListener(this);
         findViewById(R.id.ADFListView).setOnClickListener(this);
         mLearningModeToggleButton.setOnClickListener(this);
@@ -60,6 +63,9 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
             case R.id.loadadf:
                 mIsLoadADF = mLoadADFToggleButton.isChecked();
                 break;
+            case R.id.loadgraphics:
+                mIsLoadGraphics = mLoadGraphicsToggleButton.isChecked();
+                break;
             case R.id.learningmode:
                 mIsUseAreaLearning = mLearningModeToggleButton.isChecked();
                 break;
@@ -77,8 +83,11 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
         Intent startADIntent = new Intent(this, AreaLearningActivity.class);
         mIsUseAreaLearning = mLearningModeToggleButton.isChecked();
         mIsLoadADF = mLoadADFToggleButton.isChecked();
+        mIsLoadGraphics =mLoadGraphicsToggleButton.isChecked();
+
         startADIntent.putExtra(USE_AREA_LEARNING, mIsUseAreaLearning);
         startADIntent.putExtra(LOAD_ADF, mIsLoadADF);
+        startADIntent.putExtra(LOAD_GRAPHICS,mIsLoadGraphics);
         startActivity(startADIntent);
     }
 

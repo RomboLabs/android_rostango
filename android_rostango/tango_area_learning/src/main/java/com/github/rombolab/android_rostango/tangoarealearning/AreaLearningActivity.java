@@ -2,8 +2,10 @@ package com.github.rombolab.android_rostango.tangoarealearning;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -91,13 +93,14 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
 
     private boolean mIsRelocalized;
     private boolean mIsLearningMode;
+    private boolean mIsLoadGraphics;
     private boolean mIsConstantSpaceRelocalize;
-
+    private boolean mIsNodeRunning;
     private String mCurrentUUID;
 
 //
-//    private ALRenderer mRenderer;
-//    private GLSurfaceView mGLView;
+   private ALRenderer mRenderer;
+   private GLSurfaceView mGLView;
 
     public AreaLearningActivity() {
         super("Area Learning App", "Area Learning App");
@@ -131,6 +134,7 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
 
         mTangoServiceVersionTextView = (TextView) findViewById(R.id.version);
         mApplicationVersionTextView = (TextView) findViewById(R.id.appversion);
+        mGLView = (GLSurfaceView) findViewById(R.id.gl_surface_view);
 
         mFirstPersonButton = (Button) findViewById(R.id.first_person_button);
         mThirdPersonButton = (Button) findViewById(R.id.third_person_button);
@@ -146,24 +150,27 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
         mThirdPersonButton.setOnClickListener(this);
         mTopDownButton.setOnClickListener(this);
 
-/*        PackageInfo packageInfo;
-        try {
-            packageInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
-            mApplicationVersionTextView.setText(packageInfo.versionName);
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }*/
+
 
 
         // Instantiate the Tango service
         mTango = new Tango(this);
         mIsRelocalized = false;
+        mIsNodeRunning = false;
 
         Intent intent = getIntent();
         mIsLearningMode = intent.getBooleanExtra(ALStartActivity.USE_AREA_LEARNING, false);
         mIsConstantSpaceRelocalize = intent.getBooleanExtra(ALStartActivity.LOAD_ADF, false);
+        mIsLoadGraphics =intent.getBooleanExtra(ALStartActivity.LOAD_GRAPHICS,false);
 
 
+        //Load OpenGL etc only if user asked for graphics to be loaded;
+        if(mIsLoadGraphics) {
+            mRenderer = new ALRenderer();
+            mGLView.setEGLContextClientVersion(2);
+            mGLView.setRenderer(mRenderer);
+            mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        }
         setTangoConfig();
     }
 
@@ -180,7 +187,7 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
         nodeConfiguration.setMasterUri(getMasterUri());
         Log.i(TAG, "Config Done");
         nodeMainExecutor.execute(mALNode, nodeConfiguration);
-
+        mIsNodeRunning=true;
 
     }
 
@@ -209,6 +216,9 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
             if (fullUUIDList.size() > 0) {
                 mConfig.putString(TangoConfig.KEY_STRING_AREADESCRIPTION,
                         fullUUIDList.get(fullUUIDList.size() - 1));
+
+
+
                 mUUIDTextView.setText(getString(R.string.number_of_adfs) + fullUUIDList.size()
                         + getString(R.string.latest_adf_is)
                         + fullUUIDList.get(fullUUIDList.size() - 1));
@@ -305,37 +315,33 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
 
                 // Update the text views with Pose info.
                 updateTextViewWith(pose);
-
-               /* if (pose.baseFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE
-                        && pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE){
-                    if (mALNode.isStarted) {
-                        mALNode.publishPose(pose);
+                // Use Graphics only if asked to
+                if (mIsLoadGraphics) {
+                    float[] translation = pose.getTranslationAsFloats();
+                    boolean updateRenderer = false;
+                    if (mIsRelocalized) {
+                        if (pose.baseFrame == TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION
+                                && pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE) {
+                            updateRenderer = true;
+                            mRenderer.getGreenTrajectory().updateTrajectory(translation);
+                        }
+                    } else {
+                        if (pose.baseFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE
+                                && pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE) {
+                            updateRenderer = true;
+                            mRenderer.getBlueTrajectory().updateTrajectory(translation);
+                        }
                     }
-                }*/
- //               float[] translation = pose.getTranslationAsFloats();
- //               boolean updateRenderer = false;
- //               if (mIsRelocalized) {
- //                   if (pose.baseFrame == TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION
- //                           && pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE) {
- //                       updateRenderer = true;
- //                       mRenderer.getGreenTrajectory().updateTrajectory(translation);
- //                   }
- //               } else {
- //                   if (pose.baseFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE
- //                           && pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE) {
- //                       updateRenderer = true;
- //                       mRenderer.getBlueTrajectory().updateTrajectory(translation);
- //                   }
- //               }
- //
- //               // Update the trajectory, model matrix, and view matrix, then
- //               // render the scene again
- //               if (updateRenderer) {
- //                   mRenderer.getModelMatCalculator().updateModelMatrix(translation,
- //                           pose.getRotationAsFloats());
- //                   mRenderer.updateViewMatrix();
- //                   mGLView.requestRender();
- //               }
+
+                    // Update the trajectory, model matrix, and view matrix, then
+                    // render the scene again
+                    if (updateRenderer) {
+                        mRenderer.getModelMatCalculator().updateModelMatrix(translation,
+                                pose.getRotationAsFloats());
+                        mRenderer.updateViewMatrix();
+                        mGLView.requestRender();
+                    }
+                }
             }
         });
     }
@@ -421,7 +427,7 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                     mAdf2DevicePoseStatusTextView.setText(getPoseStatus(pose));
                     mAdf2DevicePoseCountTextView.setText(Integer.toString(mAdf2DevicePoseCount));
                     mAdf2DevicePoseDeltaTextView.setText(threeDec.format(mAdf2DevicePoseDelta));
-                    if (mALNode.isStarted) {
+                    if (mIsNodeRunning) {
                         mALNode.publishOnAdfToDevice(pose);
                     }
                 }
@@ -443,7 +449,7 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                             .setText(Integer.toString(mStart2DevicePoseCount));
                     mStart2DevicePoseDeltaTextView.setText(threeDec.format(mStart2DevicePoseDelta));
 
-                    if (mALNode.isStarted) {
+                    if (mIsNodeRunning) {
                         mALNode.publishOnStartToDevice(pose);
                     }
 
@@ -472,7 +478,7 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                         // Set the color blue
                     }
 
-                    if (mALNode.isStarted) {
+                    if (mIsNodeRunning) {
                         mALNode.publishOnAdfToStart(pose);
                     }
                 }
@@ -505,19 +511,13 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.first_person_button:
-                Toast.makeText(getApplicationContext(), R.string.tango_error, Toast.LENGTH_SHORT)
-                        .show();
-//                mRenderer.setFirstPersonView();
+                mRenderer.setFirstPersonView();
                 break;
             case R.id.top_down_button:
-                Toast.makeText(getApplicationContext(), R.string.tango_error, Toast.LENGTH_SHORT)
-                        .show();
-//                mRenderer.setTopDownView();
+                mRenderer.setTopDownView();
                 break;
             case R.id.third_person_button:
-                Toast.makeText(getApplicationContext(), R.string.tango_error, Toast.LENGTH_SHORT)
-                        .show();
-//                mRenderer.setThirdPersonView();
+               mRenderer.setThirdPersonView();
                 break;
             case R.id.saveAdf:
                 saveAdf();
@@ -526,6 +526,11 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                 Log.w(TAG, "Unknown button click");
                 return;
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mRenderer.onTouchEvent(event);
     }
 
 }

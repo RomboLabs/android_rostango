@@ -44,6 +44,7 @@
     <string name="application_adfs">Application ADFs</string>
     <string name="uuid">UUID</string>
     <string name="tango_error">"Tango Exception! Try again!"</string>
+    <string name="tango_graphics_error">"Graphics Turned Off..Load Graphics to use this function!"</string>
     <string name="tango_invalid">"Tango Invalid Exception! Try again!"</string>
     <string name="tango_out_of_date_exception">"Tango Service outdated!"</string>
     <string name="no_uuid_tango_error">"No ADF with that UUID!"</string>

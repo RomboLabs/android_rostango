@@ -136,19 +136,23 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
         mApplicationVersionTextView = (TextView) findViewById(R.id.appversion);
         mGLView = (GLSurfaceView) findViewById(R.id.gl_surface_view);
 
-        mFirstPersonButton = (Button) findViewById(R.id.first_person_button);
-        mThirdPersonButton = (Button) findViewById(R.id.third_person_button);
-        mTopDownButton = (Button) findViewById(R.id.top_down_button);
+
+         mFirstPersonButton = (Button) findViewById(R.id.first_person_button);
+         mThirdPersonButton = (Button) findViewById(R.id.third_person_button);
+         mTopDownButton = (Button) findViewById(R.id.top_down_button);
+
+         // Set up button click listeners
+         mFirstPersonButton.setOnClickListener(this);
+         mThirdPersonButton.setOnClickListener(this);
+         mTopDownButton.setOnClickListener(this);
+
 
         mSaveAdf = (Button) findViewById(R.id.saveAdf);
         mUUIDTextView = (TextView) findViewById(R.id.uuid);
 
         mSaveAdf.setVisibility(View.GONE);
 
-        // Set up button click listeners
-        mFirstPersonButton.setOnClickListener(this);
-        mThirdPersonButton.setOnClickListener(this);
-        mTopDownButton.setOnClickListener(this);
+
 
 
 
@@ -164,13 +168,13 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
         mIsLoadGraphics =intent.getBooleanExtra(ALStartActivity.LOAD_GRAPHICS,false);
 
 
-        //Load OpenGL etc only if user asked for graphics to be loaded;
-        if(mIsLoadGraphics) {
+
+
             mRenderer = new ALRenderer();
             mGLView.setEGLContextClientVersion(2);
             mGLView.setRenderer(mRenderer);
             mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        }
+
         setTangoConfig();
     }
 
@@ -511,14 +515,27 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.first_person_button:
-                mRenderer.setFirstPersonView();
+
+               if(mIsLoadGraphics){
+                mRenderer.setFirstPersonView();}
+               else{  Toast.makeText(getApplicationContext(), R.string.tango_graphics_error, Toast.LENGTH_SHORT)
+                       .show();}
                 break;
             case R.id.top_down_button:
-                mRenderer.setTopDownView();
+                if(mIsLoadGraphics){
+                    mRenderer.setTopDownView();}
+                else{  Toast.makeText(getApplicationContext(), R.string.tango_graphics_error, Toast.LENGTH_SHORT)
+                        .show();}
+
                 break;
             case R.id.third_person_button:
-               mRenderer.setThirdPersonView();
+
+                if(mIsLoadGraphics){
+                    mRenderer.setThirdPersonView();}
+                else{  Toast.makeText(getApplicationContext(), R.string.tango_graphics_error, Toast.LENGTH_SHORT)
+                        .show();}
                 break;
+
             case R.id.saveAdf:
                 saveAdf();
                 break;

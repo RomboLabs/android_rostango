@@ -20,14 +20,16 @@ vicon_counter=0;
 tango_ss_counter=0;
 vicon_ss_counter=0
 
-def callback(tango_pose_start_device):
-    #rospy.loginfo("callback");
-    global tango_counter;
-    tango_ss_file=open('tango_pose_start_device','a')
+vicon_pose_topic='vicon/TangoJuly24/mainBody'
 
-    tango_ss_file.write(str(tango_pose_start_device.status_code)+','+ str(tango_pose_start_device.header.stamp.secs)+ ','+str(tango_pose_start_device.header.stamp.nsecs)+ ','
-        + str(tango_pose_start_device.translation[0])+ ','+ str(tango_pose_start_device.translation[1])+ ','+ str(tango_pose_start_device.translation[2])+ ','
-        +str(tango_pose_start_device.orientation[0])+','+str(tango_pose_start_device.orientation[1])+','+str(tango_pose_start_device.orientation[2])+','+str(tango_pose_start_device.orientation[3])++str(tango_counter)+'\n') 
+def callback(tango_pose_start_device):
+    rospy.loginfo("tango callback");
+    #global tango_counter;
+    #tango_ss_file=open('tango_pose_start_device','a')
+
+    #tango_ss_file.write(str(tango_pose_start_device.status_code)+','+ str(tango_pose_start_device.header.stamp.secs)+ ','+str(tango_pose_start_device.header.stamp.nsecs)+ ','
+    #    + str(tango_pose_start_device.translation[0])+ ','+ str(tango_pose_start_device.translation[1])+ ','+ str(tango_pose_start_device.translation[2])+ ','
+    #    +str(tango_pose_start_device.orientation[0])+','+str(tango_pose_start_device.orientation[1])+','+str(tango_pose_start_device.orientation[2])+','+str(tango_pose_start_device.orientation[3])++str(tango_counter)+'\n') 
     #print('pose_time = '+str(tango_pose_start_device.timestamp)+ ','+ str(tango_pose_start_device.translation)+ ','+str(tango_pose_start_device.orientation)+'\n') 
     
     tango_ss_file.close();
@@ -94,10 +96,10 @@ def sync_adf_only_callback(tango_pose_adf_device,vicon_pose):
      global mydir;
     
              
-     tango__adf_file=open(os.path.join(mydir,'tango_pose_adf'),'w')
-     vicon_adf_file =open(os.path.join(mydir,'vicon_pose_adf'),'w')
+     tango_adf_file=open(os.path.join(mydir,'tango_pose_adf'),'a')
+     vicon_adf_file =open(os.path.join(mydir,'vicon_pose_adf'),'a')
 
-     tango__adf_file.write(str(tango_pose_adf_device.status_code.status)+','+ str(tango_pose_adf_device.header.stamp.secs)+ ','+str(tango_pose_adf_device.header.stamp.nsecs)+ ','
+     tango_adf_file.write(str(tango_pose_adf_device.status_code.status)+','+ str(tango_pose_adf_device.header.stamp.secs)+ ','+str(tango_pose_adf_device.header.stamp.nsecs)+ ','
         +str(tango_pose_adf_device.translation[0])+ ','+ str(tango_pose_adf_device.translation[1])+ ','+ str(tango_pose_adf_device.translation[2])+ ','
         +str(tango_pose_adf_device.orientation[0])+','+str(tango_pose_adf_device.orientation[1])+','+str(tango_pose_adf_device.orientation[2])+','+str(tango_pose_adf_device.orientation[3])+','
         +str(tango_counter)+'\n') 
@@ -112,7 +114,7 @@ def sync_adf_only_callback(tango_pose_adf_device,vicon_pose):
      vicon_counter +=1;    
     
      vicon_adf_file.close();   
-     tango__adf_file.close();
+     tango_adf_file.close();
      
 def sync_ss_only_callback(tango_pose_adf_device,vicon_pose):
      rospy.loginfo("synced");
@@ -121,7 +123,7 @@ def sync_ss_only_callback(tango_pose_adf_device,vicon_pose):
      global mydir;
     
              
-     tango_ss_file=open(os.path.join(mydir,'tango_pose__ss'),'w')
+     tango_ss_file=open(os.path.join(mydir,'tango_pose__ss'),'a')
      vicon_ss_file =open(os.path.join(mydir,'vicon_pose'),'a')
 
      tango_ss_file.write(str(tango_pose_adf_device.status_code.status)+','+ str(tango_pose_adf_device.header.stamp.secs)+ ','+str(tango_pose_adf_device.header.stamp.nsecs)+ ','
@@ -154,23 +156,23 @@ def listener():
 
     #rospy subscribers
     #rospy.Subscriber('/tango_pose_start_device', TangoPoseDataMsg, callback)
-    #rospy.Subscriber('/vicon/tangoJune29/mainBody', TransformStamped, vicon_callback)
+    #rospy.Subscriber('vicon/TangoJuly24/mainBody', TransformStamped, vicon_callback)
     
     
 
      # message filter subsribers 
-    tango_sub_ss= message_filters.Subscriber('/tango_pose_start_device', TangoPoseDataMsg) #Start of service to device
+    #tango_sub_ss= message_filters.Subscriber('/tango_pose_start_device', TangoPoseDataMsg) #Start of service to device
     tango_sub_adf= message_filters.Subscriber('/tango_pose_adf_device', TangoPoseDataMsg) #ADF to device
     #tango_sub_adf_ss= message_filters.Subscriber('/tango_pose_adf_start', TangoPoseDataMsg) #ADF to Start of service 
-    vicon_sub= message_filters.Subscriber('/vicon/tangoJune29/mainBody',TransformStamped )  # Vicon pose est 
+    vicon_sub= message_filters.Subscriber('vicon/TangoJuly24/mainBody',TransformStamped )  # Vicon pose est 
 
     #message filter sync params
-    ts_adf = message_filters.ApproximateTimeSynchronizer([tango_sub_adf,vicon_sub], 10,5)
-    ts_ss = message_filters.ApproximateTimeSynchronizer([tango_sub_ss,vicon_sub], 10,5)
+    ts_adf = message_filters.ApproximateTimeSynchronizer([tango_sub_adf,vicon_sub], 10,40)
+    #ts_ss = message_filters.ApproximateTimeSynchronizer([tango_sub_ss,vicon_sub], 10,40)
 
     #message filter callbacks 
     ts_adf.registerCallback(sync_adf_only_callback)
-    ts_ss.registerCallback(sync_ss_only_callback)
+   # ts_ss.registerCallback(sync_ss_only_callback)
     
     
     rospy.loginfo("listening");

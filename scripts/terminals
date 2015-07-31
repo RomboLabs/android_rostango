@@ -1,0 +1,20 @@
+export ROS_IP=192.168.0.101
+rai@BamComputer:~$ roscore
+
+
+source devel/setup.bash
+roslaunch vicon_bridge vicon.launch 
+
+
+~/catkin_ws/myandroid/src/scripts$ python adf_calibration.py
+
+
+rostopic echo /vicon/TangoJuly24/mainBody 
+
+rostopic echo /tango_pose_adf_device/translation
+
+
+
+source ../../devel/setup.bash
+~/catkin_ws/myandroid/src/scripts$ python tango_listener.py 
+

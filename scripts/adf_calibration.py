@@ -11,6 +11,8 @@ import rospy
 import message_filters
 import os, datetime
 import sys
+
+import tf
 filename= []
 
 from geometry_msgs.msg import TransformStamped
@@ -42,6 +44,12 @@ def vicon_callback(vicon_pose):
 
     vicon_counter +=1;    
      
+    # rospy.loginfo("Vicon Quat: x:%f,y: %f ,z:%f, w:%f",vicon_pose.transform.rotation.x,
+    #  vicon_pose.transform.rotation.y,
+    #  vicon_pose.transform.rotation.z,
+    #  vicon_pose.transform.rotation.w)
+    rospy.loginfo("Vicon trans: x:%f, y:%f, z:%f", vicon_pose.transform.translation.x,vicon_pose.transform.translation.y,vicon_pose.transform.translation.z);
+
     quaternion = (
     vicon_pose.transform.rotation.x,
     vicon_pose.transform.rotation.y,
@@ -53,9 +61,10 @@ def vicon_callback(vicon_pose):
     yaw = euler[2]
     
     rospy.loginfo("Vicon: Roll:%f,pitch: %f ,yaw:%f",roll,pitch,yaw);
+
     
-    if (vicon_pose.transform.translation.x < x_tolerance and vicon_pose.transform.translation.y < y_tolerance and vicon_pose.transform.translation.z < z_tolerance):
-     rospy.loginfo("Device within tolerance to vicon origin... start ADF learning ");
+    # if (vicon_pose.transform.translation.x < x_tolerance and vicon_pose.transform.translation.y < y_tolerance and vicon_pose.transform.translation.z < z_tolerance):
+     # rospy.loginfo("Device within tolerance to vicon origin... start ADF learning ");
      
     vicon_adf_calibration_file.close();
 

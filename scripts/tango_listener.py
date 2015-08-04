@@ -14,7 +14,7 @@ import os, datetime
 from geometry_msgs.msg import TransformStamped
 from tango_msgs.msg import TangoPoseDataMsg
 
-mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
 tango_counter=0;
 vicon_counter=0;
 tango_ss_counter=0;
@@ -48,12 +48,7 @@ def sync_callback( tango_pose_start_device,  tango_pose_adf_device,tango_pose_ad
      global tango_counter;
      global vicon_counter;
       
-     mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
-     try:
-        os.makedirs(mydir)
-     except OSError, e:
-        if e.errno != 17:
-            raise 
+
             
             
      tango__ss_file=open(os.path.join(mydir,'tango_pose_ss'),'w')    

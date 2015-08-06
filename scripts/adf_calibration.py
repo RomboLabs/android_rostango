@@ -8,7 +8,7 @@
 
 
 import rospy
-import message_filters
+
 import os, datetime
 import sys
 
@@ -25,16 +25,15 @@ calib_file='vicon_adf_calibration';
 vicon_pose_topic='vicon/TangoJuly24/mainBody';
 
 mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
-
+ideal_rotation=[90,0,0];
+rot_tolerance=0.1;
 def vicon_callback(vicon_pose):
     
     global vicon_counter;
     global calib_file;
     global mydir
     
-    x_tolerance = 0.1;
-    y_tolerance = 0.1;
-    z_tolerance = 0.4;	
+
     
     vicon_adf_calibration_file=open(os.path.join(mydir,calib_file),'a')
               
@@ -44,29 +43,51 @@ def vicon_callback(vicon_pose):
 
     vicon_counter +=1;    
      
-    # rospy.loginfo("Vicon Quat: x:%f,y: %f ,z:%f, w:%f",vicon_pose.transform.rotation.x,
-    #  vicon_pose.transform.rotation.y,
-    #  vicon_pose.transform.rotation.z,
-    #  vicon_pose.transform.rotation.w)
     rospy.loginfo("Vicon trans: x:%f, y:%f, z:%f", vicon_pose.transform.translation.x,vicon_pose.transform.translation.y,vicon_pose.transform.translation.z);
 
-    quaternion = (
+    quaternion_current = (
     vicon_pose.transform.rotation.x,
     vicon_pose.transform.rotation.y,
     vicon_pose.transform.rotation.z,
     vicon_pose.transform.rotation.w);
-    euler = tf.transformations.euler_from_quaternion(quaternion)
-    roll = euler[0]
-    pitch = euler[1]
-    yaw = euler[2]
-    
-    rospy.loginfo("Vicon: Roll:%f,pitch: %f ,yaw:%f",roll,pitch,yaw);
+    euler = tf.transformations.euler_from_quaternion(quaternion_current)
+    roll_current = euler[0]
+    pitch_current = euler[1]
+    yaw_current = euler[2]
 
-    
-    # if (vicon_pose.transform.translation.x < x_tolerance and vicon_pose.transform.translation.y < y_tolerance and vicon_pose.transform.translation.z < z_tolerance):
-     # rospy.loginfo("Device within tolerance to vicon origin... start ADF learning ");
+    rospy.loginfo("Vicon Quat: x:%f,y: %f ,z:%f, w:%f",vicon_pose.transform.rotation.x,
+      vicon_pose.transform.rotation.y,
+      vicon_pose.transform.rotation.z,
+      vicon_pose.transform.rotation.w)
+    rospy.loginfo("Vicon: Roll:%f,pitch: %f ,yaw:%f",roll_current,pitch_current,yaw_current);
+
+    if (isTranslationInBounds(vicon_pose.transform.translation) and isRotationInBounds(roll_current,pitch_current,yaw_current)):    
+      rospy.loginfo("Device within tolerance to vicon origin... start ADF learning ");
      
     vicon_adf_calibration_file.close();
+
+
+def isRotationInBounds(roll_current,pitch_current,yaw_current):
+    global rot_tolerance;
+    
+    if ((abs(roll_current-ideal_rotation[0])<rot_tolerance) and (abs(pitch_current-ideal_rotation)<rot_tolerance) and (abs(yaw_current-ideal_rotation[2])<rot_tolerance)):
+      return True;
+    else:
+       return False;   
+
+def isTranslationInBounds(translation_current):
+  
+    x_tolerance = 0.1;
+    y_tolerance = 0.1;
+    z_tolerance = 0.4;	
+    
+    if (translation_current.x < x_tolerance and translation_current.y < y_tolerance and translation_current.z < z_tolerance):
+        return True;
+
+    else :
+        return False;
+        
+
 
 def tango_callback(tango_pose_start_device):
     rospy.loginfo("tango callback");
@@ -106,7 +127,7 @@ def listener():
     rospy.Subscriber('/tango_pose_start_device', TangoPoseDataMsg, tango_callback)
     rospy.Subscriber(vicon_pose_topic, TransformStamped, vicon_callback)
     
-    rospy.loginfo("reading vicon pose...start adf recording");
+    rospy.loginfo("reading vicon pose..");
 
     rospy.spin()
 

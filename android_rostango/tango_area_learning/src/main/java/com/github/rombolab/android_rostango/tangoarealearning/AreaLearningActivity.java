@@ -1,7 +1,10 @@
 package com.github.rombolab.android_rostango.tangoarealearning;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +25,8 @@ import com.google.atap.tangoservice.TangoInvalidException;
 import com.google.atap.tangoservice.TangoOutOfDateException;
 import com.google.atap.tangoservice.TangoPoseData;
 import com.google.atap.tangoservice.TangoXyzIjData;
+
+
 import  com.github.rombolab.android_rostango.tangoarealearning.SetADFNameDialog.SetNameCommunicator;
 
 import org.ros.android.RosActivity;
@@ -346,6 +351,10 @@ public class AreaLearningActivity extends RosActivity implements View.OnClickLis
                         mGLView.requestRender();
                     }
                 }
+            }
+
+            public void onFrameAvailable(int cameraId) {
+                // We are not using onFrameAvailable for this application.
             }
         });
     }

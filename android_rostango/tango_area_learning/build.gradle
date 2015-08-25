@@ -40,6 +40,7 @@ dependencies {
     compile 'com.github.rosjava.android_extras:gingerbread:[0.1,0.2)'
     compile 'org.ros.android_core:android_10:[0.2,0.3)'
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: ['**/*.jar'])
     compile(name: 'TangoUtils', ext: 'aar')
 }
 

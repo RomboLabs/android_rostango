@@ -22,7 +22,7 @@ from tango_msgs.msg import TangoPoseDataMsg
 tango_counter=0;
 vicon_counter=0;
 calib_file='vicon_adf_calibration';
-vicon_pose_topic='vicon/TangoJuly24/mainBody';
+vicon_pose_topic='vicon/icraMount/mainBody';
 
 mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
 ideal_rotation=[-93.69,0.740,87.106];
@@ -73,7 +73,7 @@ def isRotationInBounds(roll_current,pitch_current,yaw_current):
     if ((abs(roll_current-ideal_rotation[0])<rot_tolerance) and (abs(pitch_current-ideal_rotation[1])<rot_tolerance) and (abs(yaw_current-ideal_rotation[2])<rot_tolerance)):
       return True;
     else:
-       rospy.loginfo("Errors r:%f,p:%f,y:%f",abs(roll_current-ideal_rotation[0]),abs(pitch_current-ideal_rotation[1]),abs(yaw_current-ideal_rotation[2]));
+     #  rospy.loginfo("Errors r:%f,p:%f,y:%f",abs(roll_current-ideal_rotation[0]),abs(pitch_current-ideal_rotation[1]),abs(yaw_current-ideal_rotation[2]));
        return False;   
 
 def isTranslationInBounds(translation_current):

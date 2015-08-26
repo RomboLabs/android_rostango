@@ -6,8 +6,9 @@ roscore
 source ~/catkin_ws/mycpp/devel/setup.bash
 roslaunch vicon_bridge vicon.launch
 
-
-~/catkin_ws/myandroid/src/scripts$ python adf_calibration.py
+source ~/catkin_ws/myandroid//devel/setup.bash
+ cd ~/catkin_ws/myandroid/src/scripts
+python adf_calibration.py
 
 
 

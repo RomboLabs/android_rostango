@@ -20,7 +20,7 @@ tango_counter=0;
 vicon_counter=0;
 mustAnnotate = True;
 
-vicon_pose_topic='vicon/TangoJuly24/mainBody'
+vicon_pose_topic='vicon/icraMount/mainBody'
 
 
 def sync_adf_only_callback(tango_pose_adf_device,vicon_pose):
@@ -77,7 +77,7 @@ def listener():
      # message filter subsribers 
 
     tango_sub_adf= message_filters.Subscriber('/tango_pose_adf_device', TangoPoseDataMsg) #ADF to device
-    vicon_sub= message_filters.Subscriber('vicon/TangoJuly24/mainBody',TransformStamped )  # Vicon pose est 
+    vicon_sub= message_filters.Subscriber('vicon/icraMount/mainBody',TransformStamped )  # Vicon pose est 
 
     #message filter sync params
     ts_adf = message_filters.ApproximateTimeSynchronizer([tango_sub_adf,vicon_sub], 10,40)

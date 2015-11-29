@@ -25,7 +25,7 @@ calib_file='vicon_adf_calibration';
 vicon_pose_topic='vicon/tango/mainBody';
 
 mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
-ideal_rotation=[-93.69,0.740,87.106];
+ideal_rotation=[-91,2,87];
 rot_tolerance=5;
 def vicon_callback(vicon_pose):
     
@@ -60,7 +60,7 @@ def vicon_callback(vicon_pose):
     #  vicon_pose.transform.rotation.z,
     #  vicon_pose.transform.rotation.w)
     rospy.loginfo("Vicon: Roll:%f,pitch: %f ,yaw:%f",math.degrees(roll_current),math.degrees(pitch_current),math.degrees(yaw_current));
-
+    
     if (isTranslationInBounds(vicon_pose.transform.translation) and isRotationInBounds(roll_current,pitch_current,yaw_current)):    
       rospy.loginfo("Device within tolerance to vicon origin... start ADF learning ");
      

@@ -6,13 +6,13 @@ roscore
 source ~/catkin_ws/mycpp/devel/setup.bash
 roslaunch vicon_bridge vicon.launch
 
-source ~/catkin_ws/myandroid//devel/setup.bash
+source ~/catkin_ws/myandroid/devel/setup.bash
  cd ~/catkin_ws/myandroid/src/scripts
 python adf_calibration.py
 
 
 
-source ~/catkin_ws/myandroid//devel/setup.bash
+source ~/catkin_ws/myandroid/devel/setup.bash
 cd ~/catkin_ws/myandroid/src/scripts$ 
 python tango_listener.py 
 

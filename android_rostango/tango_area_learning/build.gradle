@@ -39,9 +39,11 @@ dependencies {
 
     compile 'com.github.rosjava.android_extras:gingerbread:[0.1,0.2)'
     compile 'org.ros.android_core:android_10:[0.2,0.3)'
+  //  compile 'org.rajawali3d:rajawali:1.0.294-SNAPSHOT@aar'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile fileTree(dir: 'libs', include: ['**/*.jar'])
-    compile(name: 'TangoUtils', ext: 'aar')
+
+    compile(name: 'TangoUtils-release', ext: 'aar')
 }
 
 repositories{
@@ -51,6 +53,8 @@ repositories{
     }
 
 }
+
+
 apply plugin: 'com.android.application'
 
 android {

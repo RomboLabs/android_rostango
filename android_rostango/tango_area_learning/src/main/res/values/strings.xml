@@ -16,7 +16,7 @@
 -->
 <resources>
 
-    <string name="app_name"> RomboLabs ROS Tango Java Area Learning</string>
+    <string name="app_name"> RomboLabs ROS Tango Java Area Learning v2.0</string>
     <string name="menu_name">Java Area Learning</string>
     <string name="service_version">"Tango service version: "</string>
     <string name="app_version">"App version: "</string>
@@ -70,6 +70,10 @@
     <string name="pose_invalid">"invalid"</string>
     <string name="pose_unknown">"unknown"</string>
     <string name="latest_adf_is">", Latest ADF is: "</string>
+    <string name="adf_saving">Saving ADF</string>
+    <string name="default_adf_name">New ADF</string>
+    <string name="save_adf_failed_toast_format">"Failed to save ADF '%1$s'."</string>
+    <string name="save_adf_success_toast_format">"Saved ADF '%1$s' (%2$s)."</string>
 
     <string-array name="SetDialogMenuItemsAPISpace">
         <item>Rename</item>

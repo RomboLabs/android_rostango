@@ -16,9 +16,8 @@
 
 package com.github.rombolab.android_rostango.tangoarealearning;
 
-/**
- * Created by vijeth on 4/21/15.
- */
+
+import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -30,26 +29,29 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
-
 /**
- * This Class shows a dialog to set the name of an ADF. When you press okay
- * SetNameLocation Call back is called where setting the name should be handled.
+ * Queries the user for an ADF name, optionally showing the ADF UUID.
  */
 public class SetADFNameDialog extends DialogFragment implements OnClickListener {
-    private EditText mNameEditText;
-    private TextView mUUIDTextView;
-    SetNameCommunicator mCommunicator;
+
+    EditText mNameEditText;
+    TextView mUUIDTextView;
+    CallbackListener mCallbackListener;
+
+    interface CallbackListener {
+        public void onAdfNameOk(String name, String uuid);
+        public void onAdfNameCancelled();
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mCommunicator = (SetNameCommunicator) activity;
+        mCallbackListener = (CallbackListener)activity;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflator, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View dialogView = inflator.inflate(R.layout.set_name_dialog, null);
         getDialog().setTitle(R.string.set_name_dialogTitle);
         mNameEditText = (EditText) dialogView.findViewById(R.id.name);
@@ -71,18 +73,16 @@ public class SetADFNameDialog extends DialogFragment implements OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.Ok:
-                mCommunicator.onSetName(mNameEditText.getText().toString(),
-                        mUUIDTextView.getText().toString());
-                dismiss();
-                break;
-            case R.id.cancel:
-                dismiss();
-                break;
+        case R.id.Ok:
+            mCallbackListener.onAdfNameOk(
+                mNameEditText.getText().toString(),
+                mUUIDTextView.getText().toString());
+            dismiss();
+            break;
+        case R.id.cancel:
+            mCallbackListener.onAdfNameCancelled();
+            dismiss();
+            break;
         }
-    }
-
-    interface SetNameCommunicator {
-        public void onSetName(String name, String uuid);
     }
 }

@@ -46,10 +46,11 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
         mLearningModeToggleButton.setOnClickListener(this);
         mLoadADFToggleButton.setOnClickListener(this);
 
+      //  startActivityForResult(
+       //         Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_MOTION_TRACKING), 0);
+
         startActivityForResult(
-                Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_MOTION_TRACKING), 0);
-        startActivityForResult(
-                Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_ADF_LOAD_SAVE), 1);
+                Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_ADF_LOAD_SAVE), 0);
     }
 
 
@@ -87,7 +88,7 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
 
         startADIntent.putExtra(USE_AREA_LEARNING, mIsUseAreaLearning);
         startADIntent.putExtra(LOAD_ADF, mIsLoadADF);
-        startADIntent.putExtra(LOAD_GRAPHICS,mIsLoadGraphics);
+        startADIntent.putExtra(LOAD_GRAPHICS, mIsLoadGraphics);
         startActivity(startADIntent);
     }
 
@@ -100,13 +101,14 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == 0) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, R.string.motiontracking_permission, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        } else if (requestCode == 1) {
+//        if (requestCode == 0) {
+//            // Make sure the request was successful
+//            if (resultCode == RESULT_CANCELED) {
+//                Toast.makeText(this, R.string.motiontracking_permission, Toast.LENGTH_SHORT).show();
+//                finish();
+//            }
+//        } else
+          if (requestCode == 0) {
             // Make sure the request was successful
             if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, R.string.arealearning_permission, Toast.LENGTH_SHORT).show();
@@ -126,26 +128,3 @@ public class ALStartActivity extends Activity implements View.OnClickListener  {
 
 
 
-
-
-   /* @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_ro, menu);
-        return true;
-    }*/
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/

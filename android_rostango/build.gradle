@@ -27,8 +27,14 @@ apply plugin: 'catkin'
 
 allprojects {
     /* A github url provides a good standard unique name for your project */
+
     group 'com.github.rosjava.android_rostango'
     version = project.catkin.pkg.version
+
+    //for rajawali
+    repositories {
+       maven { url  "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
 }
 
 subprojects {

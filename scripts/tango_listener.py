@@ -58,31 +58,37 @@ def sync_start_adf_callback(tango_pose_start_device,tango_pose_adf_device,vicon_
      global vicon_counter;
      global mydir;
     
-     tango_start_file=open(os.path.join(mydir,'tango_pose_start'),'a')        
-     tango_adf_file=open(os.path.join(mydir,'tango_pose_adf'),'a')
-     vicon_adf_file =open(os.path.join(mydir,'vicon_pose_adf'),'a')
+     if int(tango_pose_adf_device.status_code.status) == 1:
 
-     tango_start_file.write(str(tango_pose_start_device.status_code.status)+','+ str(tango_pose_start_device.header.stamp.secs)+ ','+str(tango_pose_start_device.header.stamp.nsecs)+ ','
-        +str(tango_pose_start_device.translation[0])+ ','+ str(tango_pose_start_device.translation[1])+ ','+ str(tango_pose_start_device.translation[2])+ ','
-        +str(tango_pose_start_device.orientation[0])+','+str(tango_pose_start_device.orientation[1])+','+str(tango_pose_start_device.orientation[2])+','+str(tango_pose_start_device.orientation[3])+','
-        +str(tango_counter)+'\n') 
+         rospy.loginfo("Relocalized...synced and saving");
+         tango_start_file=open(os.path.join(mydir,'tango_pose_start'),'a')        
+         tango_adf_file=open(os.path.join(mydir,'tango_pose_adf'),'a')
+         vicon_adf_file =open(os.path.join(mydir,'vicon_pose_adf'),'a')
 
-     tango_adf_file.write(str(tango_pose_adf_device.status_code.status)+','+ str(tango_pose_adf_device.header.stamp.secs)+ ','+str(tango_pose_adf_device.header.stamp.nsecs)+ ','
-        +str(tango_pose_adf_device.translation[0])+ ','+ str(tango_pose_adf_device.translation[1])+ ','+ str(tango_pose_adf_device.translation[2])+ ','
-        +str(tango_pose_adf_device.orientation[0])+','+str(tango_pose_adf_device.orientation[1])+','+str(tango_pose_adf_device.orientation[2])+','+str(tango_pose_adf_device.orientation[3])+','
-        +str(tango_counter)+'\n') 
+         tango_start_file.write(str(tango_pose_start_device.status_code.status)+','+ str(tango_pose_start_device.header.stamp.secs)+ ','+str(tango_pose_start_device.header.stamp.nsecs)+ ','
+            +str(tango_pose_start_device.translation[0])+ ','+ str(tango_pose_start_device.translation[1])+ ','+ str(tango_pose_start_device.translation[2])+ ','
+            +str(tango_pose_start_device.orientation[0])+','+str(tango_pose_start_device.orientation[1])+','+str(tango_pose_start_device.orientation[2])+','+str(tango_pose_start_device.orientation[3])+','
+            +str(tango_counter)+'\n') 
+
+         tango_adf_file.write(str(tango_pose_adf_device.status_code.status)+','+ str(tango_pose_adf_device.header.stamp.secs)+ ','+str(tango_pose_adf_device.header.stamp.nsecs)+ ','
+            +str(tango_pose_adf_device.translation[0])+ ','+ str(tango_pose_adf_device.translation[1])+ ','+ str(tango_pose_adf_device.translation[2])+ ','
+            +str(tango_pose_adf_device.orientation[0])+','+str(tango_pose_adf_device.orientation[1])+','+str(tango_pose_adf_device.orientation[2])+','+str(tango_pose_adf_device.orientation[3])+','
+            +str(tango_counter)+'\n') 
 
 
-     vicon_adf_file.write(str(vicon_pose.header.stamp.secs)+ ','+ str(vicon_pose.header.stamp.nsecs)+ ','
-       +str(vicon_pose.transform.translation.x)+ ','+str(vicon_pose.transform.translation.y)+ ','+str(vicon_pose.transform.translation.z)+ ','
-        +str(vicon_pose.transform.rotation.x)+ ','+str(vicon_pose.transform.rotation.y)+ ','+str(vicon_pose.transform.rotation.z)+ ','+str(vicon_pose.transform.rotation.w)+ ','
-        +str(vicon_counter)+'\n')  
+         vicon_adf_file.write(str(vicon_pose.header.stamp.secs)+ ','+ str(vicon_pose.header.stamp.nsecs)+ ','
+           +str(vicon_pose.transform.translation.x)+ ','+str(vicon_pose.transform.translation.y)+ ','+str(vicon_pose.transform.translation.z)+ ','
+            +str(vicon_pose.transform.rotation.x)+ ','+str(vicon_pose.transform.rotation.y)+ ','+str(vicon_pose.transform.rotation.z)+ ','+str(vicon_pose.transform.rotation.w)+ ','
+            +str(vicon_counter)+'\n')  
 
-     tango_counter +=1;
-     vicon_counter +=1;    
-    
-     vicon_adf_file.close();   
-     tango_adf_file.close();
+         tango_counter +=1;
+         vicon_counter +=1;    
+        
+         vicon_adf_file.close();   
+         tango_adf_file.close();
+     else :
+        rospy.loginfo("error status... skipping");   
+           
 
 def listener():
     global mydir;

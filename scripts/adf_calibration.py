@@ -19,10 +19,12 @@ from geometry_msgs.msg import TransformStamped
 from tf.transformations import euler_from_quaternion
 from tango_msgs.msg import TangoPoseDataMsg
 
+
 tango_counter=0;
 vicon_counter=0;
 calib_file='vicon_adf_calibration';
 vicon_pose_topic='vicon/tango7/mainBody';
+
 
 mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
 ideal_rotation=[-91,2,87];
@@ -110,7 +112,7 @@ def listener():
 
     global mydir;
     global filename;
-
+    global mustAnnotate;
   
     try:
         os.makedirs(mydir)
@@ -119,9 +121,13 @@ def listener():
             raise 
      
     if len(sys.argv) == 1:
-      print "No filename chosen... Using default"
-    else:
-      filename = sys.argv[1]
+     print "No calibration setting added"
+     subjectName = raw_input('Enter your setting name: ')
+    else:     
+      subjectName = sys.argv[1]
+      print 'calib setting ',subjectName;
+      
+    mydir=mydir+'-'+subjectName;
       
     
     rospy.init_node('calibration', anonymous=True)

@@ -22,7 +22,7 @@ from tango_msgs.msg import TangoPoseDataMsg
 tango_counter=0;
 vicon_counter=0;
 calib_file='vicon_adf_calibration';
-vicon_pose_topic='vicon/tango/mainBody';
+vicon_pose_topic='vicon/tango7/mainBody';
 
 mydir = os.path.join(os.getcwd(), datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
 ideal_rotation=[-91,2,87];

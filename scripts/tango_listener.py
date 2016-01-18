@@ -20,22 +20,8 @@ tango_counter=0;
 vicon_counter=0;
 mustAnnotate = True;
 
-vicon_pose_topic='/vicon/tango/mainBody'
+vicon_pose_topic='/vicon/tango7/mainBody'
 
-def tango_start_adf_callback(tango_pose_start_adf):
-     rospy.loginfo("starts synced");
-     global tango_counter;
-    
-     global mydir;
-
-     tango_start_adf_file=open(os.path.join(mydir,'tango_pose_start_adf'),'a')
-
-     tango_start_adf_file.write(str(tango_pose_start_adf.status_code.status)+','+ str(tango_pose_start_adf.header.stamp.secs)+ ','+str(tango_pose_start_adf.header.stamp.nsecs)+ ','
-        +str(tango_pose_start_adf.translation[0])+ ','+ str(tango_pose_start_adf.translation[1])+ ','+ str(tango_pose_start_adf.translation[2])+ ','
-        +str(tango_pose_start_adf.orientation[0])+','+str(tango_pose_start_adf.orientation[1])+','+str(tango_pose_start_adf.orientation[2])+','+str(tango_pose_start_adf.orientation[3])+','
-        +str(tango_counter)+'\n') 
-        
-     tango_start_adf_file.close();   
 
 
 
@@ -97,6 +83,7 @@ def sync_start_adf_callback(tango_pose_start_device,tango_pose_adf_device,vicon_
     
      vicon_adf_file.close();   
      tango_adf_file.close();
+
 def listener():
     global mydir;
     global subjectName;
@@ -125,7 +112,7 @@ def listener():
     tango_sub_start= message_filters.Subscriber('/tango_pose_start_device', TangoPoseDataMsg) #ADF to device 
     tango_sub_adf= message_filters.Subscriber('/tango_pose_adf_device', TangoPoseDataMsg) #ADF to device
     vicon_sub= message_filters.Subscriber(vicon_pose_topic,TransformStamped )  # Vicon pose est 
-    rospy.Subscriber('/tango_pose_adf_start', TangoPoseDataMsg, tango_start_adf_callback)
+    #rospy.Subscriber('/tango_pose_adf_start', TangoPoseDataMsg, sync_adf_only_callback)
 
 
     #message filter sync params

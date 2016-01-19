@@ -54,13 +54,11 @@ def sync_adf_only_callback(tango_pose_adf_device,vicon_pose):
          
 def sync_start_adf_callback(tango_pose_start_device,tango_pose_adf_device,vicon_pose):
      
-     global tango_counter;
-     global vicon_counter;
-     global mydir;
+         global tango_counter;
+         global vicon_counter;
+         global mydir;
     
-     if int(tango_pose_adf_device.status_code.status) == 1:
-
-         rospy.loginfo("Relocalized...synced and saving start and adf");
+     
          tango_start_file=open(os.path.join(mydir,'tango_pose_start'),'a')        
          tango_adf_file=open(os.path.join(mydir,'tango_pose_adf'),'a')
          vicon_adf_file =open(os.path.join(mydir,'vicon_pose_adf'),'a')
@@ -86,8 +84,12 @@ def sync_start_adf_callback(tango_pose_start_device,tango_pose_adf_device,vicon_
         
          vicon_adf_file.close();   
          tango_adf_file.close();
-     else :
-        rospy.loginfo("error status...");   
+
+         if int(tango_pose_adf_device.status_code.status) == 1:
+           # rospy.loginfo("Relocalized...synced and saving start and adf -- ",subjectName);
+           print ' Relocalized...synced and saving start and adf -- Subject Name',subjectName;
+         else :
+           rospy.loginfo("error status...");   
            
 
 def listener():

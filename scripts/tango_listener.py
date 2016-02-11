@@ -41,7 +41,7 @@ def sync_adf_only_callback(tango_pose_adf_device,vicon_pose):
         +str(tango_counter)+'\n') 
 
 
-     vicon_adf_file.write(str(vicon_pose.header.stamp.secs)+ ','+ str(vicon_pose.header.stamp.nsecs)+ ','
+     vicon_adf_file.write(str(tango_pose_adf_device.status_code.status)+','+ str(vicon_pose.header.stamp.secs)+ ','+ str(vicon_pose.header.stamp.nsecs)+ ','
        +str(vicon_pose.transform.translation.x)+ ','+str(vicon_pose.transform.translation.y)+ ','+str(vicon_pose.transform.translation.z)+ ','
         +str(vicon_pose.transform.rotation.x)+ ','+str(vicon_pose.transform.rotation.y)+ ','+str(vicon_pose.transform.rotation.z)+ ','+str(vicon_pose.transform.rotation.w)+ ','
         +str(vicon_counter)+'\n')  

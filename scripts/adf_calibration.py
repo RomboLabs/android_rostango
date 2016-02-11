@@ -128,7 +128,11 @@ def listener():
       print 'calib setting ',subjectName;
       
     mydir=mydir+'-'+subjectName;
-      
+    try:
+        os.makedirs(mydir)
+    except OSError, e:
+        if e.errno != 17:
+            raise   
     
     rospy.init_node('calibration', anonymous=True)
 

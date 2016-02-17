@@ -73,8 +73,8 @@ def sync_start_adf_callback(tango_pose_start_device,tango_pose_adf_device,vicon_
             +str(tango_pose_adf_device.orientation[0])+','+str(tango_pose_adf_device.orientation[1])+','+str(tango_pose_adf_device.orientation[2])+','+str(tango_pose_adf_device.orientation[3])+','
             +str(tango_counter)+'\n') 
 
-
-         vicon_adf_file.write(str(vicon_pose.header.stamp.secs)+ ','+ str(vicon_pose.header.stamp.nsecs)+ ','
+         # adding tango status in vicon file for easier processing of errors
+         vicon_adf_file.write(str(tango_pose_start_device.status_code.status)+','+str(vicon_pose.header.stamp.secs)+ ','+ str(vicon_pose.header.stamp.nsecs)+ ','
            +str(vicon_pose.transform.translation.x)+ ','+str(vicon_pose.transform.translation.y)+ ','+str(vicon_pose.transform.translation.z)+ ','
             +str(vicon_pose.transform.rotation.x)+ ','+str(vicon_pose.transform.rotation.y)+ ','+str(vicon_pose.transform.rotation.z)+ ','+str(vicon_pose.transform.rotation.w)+ ','
             +str(vicon_counter)+'\n')  
